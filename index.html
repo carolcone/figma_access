@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figma Access Request | Stewart Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #0052A3;
+            --secondary: #F0F4F8;
+            --text-primary: #1A202C;
+            --text-secondary: #4A5568;
+            --border: #E2E8F0;
+            --success: #38A169;
+            --warning: #DD6B20;
+            --error: #E53E3E;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            background: var(--secondary);
+            height: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--primary);
+            height: 100%;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-header {
+            margin-bottom: 2rem;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        label .required {
+            color: var(--error);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--white);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%234A5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        select option {
+            padding: 1rem 1.25rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            min-height: 3rem;
+        }
+
+        /* Firefox-specific dropdown styling */
+        @-moz-document url-prefix() {
+            select option {
+                padding: 0.75rem 1.25rem;
+            }
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary);
+            background: rgba(0, 102, 204, 0.02);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.75rem;
+            margin-top: 0.25rem;
+            cursor: pointer;
+        }
+
+        .radio-option.selected {
+            border-color: var(--primary);
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .option-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .info-box {
+            background: var(--secondary);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .info-box.warning {
+            background: #FFF5E6;
+            border-left-color: var(--warning);
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .conditional-field {
+            margin-top: 1rem;
+            padding-left: 1rem;
+            border-left: 3px solid var(--border);
+            display: none;
+        }
+
+        .conditional-field.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        button {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #CBD5E0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        .summary-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .summary-item {
+            background: var(--secondary);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1.5rem;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2rem;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        input.error,
+        select.error,
+        textarea.error {
+            border-color: var(--error);
+        }
+
+        @media (max-width: 640px) {
+            .content {
+                padding: 1.5rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column-reverse;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Stewart Title Figma Access Request</h1>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="content">
+            <!-- Step 1: Basic Information -->
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2 class="step-title">Basic Information</h2>
+                    <p class="step-description">Let's start with your contact details</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="name" required placeholder="John Doe">
+                    <div class="error-message" id="nameError">Please enter your full name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" required placeholder="john.doe@stewart.com">
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Role / Team <span class="required">*</span></label>
+                    <select id="role" required>
+                        <option value="">Select your role</option>
+                        <option value="Product Manager">Product Manager</option>
+                        <option value="UX/UI Designer">UX/UI Designer</option>
+                        <option value="Frontend Developer">Frontend Developer</option>
+                        <option value="Backend Developer">Backend Developer</option>
+                        <option value="Full Stack Developer">Full Stack Developer</option>
+                        <option value="Technical Analyst">Technical Analyst</option>
+                        <option value="Business Analyst">Business Analyst</option>
+                        <option value="QA/Tester">QA/Tester</option>
+                        <option value="Engineering Manager">Engineering Manager</option>
+                        <option value="Product Director">Product Director</option>
+                        <option value="Executive/Leadership">Executive/Leadership</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Customer Success">Customer Success</option>
+                        <option value="other">Other (please specify)</option>
+                    </select>
+                    <div class="error-message" id="roleError">Please select your role or team</div>
+                </div>
+
+                <div class="conditional-field" id="roleOtherField">
+                    <div class="form-group">
+                        <label for="roleOther">Please specify your role <span class="required">*</span></label>
+                        <input type="text" id="roleOther" placeholder="Enter your role or team">
+                        <div class="error-message" id="roleOtherError">Please specify your role</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="userType">User Type <span class="required">*</span></label>
+                    <select id="userType" required>
+                        <option value="">Select user type</option>
+                        <option value="internal">Internal Employee</option>
+                        <option value="external">External Contractor</option>
+                    </select>
+                    <div class="error-message" id="userTypeError">Please select a user type</div>
+                </div>
+
+                <div class="conditional-field" id="contractEndField">
+                    <div class="form-group">
+                        <label for="contractEnd">Contract End Date <span class="required">*</span></label>
+                        <input type="date" id="contractEnd">
+                        <div class="error-message" id="contractEndError">Please enter the contract end date</div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-primary" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Access Type -->
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2 class="step-title">Access Type</h2>
+                    <p class="step-description">Select the level of access you need</p>
+                </div>
+
+                <div class="info-box">
+                    <strong>Access Types Explained:</strong>
+                    Choose the access level that best matches your needs. Paid seats require additional justification.
+                </div>
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="accessType" value="viewer">
+                        <div class="option-content">
+                            <div class="option-title">Viewer (Free)</div>
+                            <div class="option-description">Comment on designs, reference screens, review spacing and colors, export permitted assets</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="accessType" value="collab">
+                        <div class="option-content">
+                            <div class="option-title">Collab (Paid)</div>
+                            <div class="option-description">All Viewer features plus real-time collaboration, full file structure access, and basic design inspection</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="accessType" value="devmode">
+                        <div class="option-content">
+                            <div class="option-title">Dev Mode (Paid)</div>
+                            <div class="option-description">Design token inspection, component states, code snippets, and asset exports for implementation</div>
+                        </div>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="accessType" value="editor">
+                        <div class="option-content">
+                            <div class="option-title">Editor (Paid - Exception Required)</div>
+                            <div class="option-description">Full editing capabilities - reserved for designers. Non-designers require documented exception.</div>
+                        </div>
+                    </label>
+                </div>
+                <div class="error-message" id="accessTypeError">Please select an access type</div>
+
+                <div class="conditional-field" id="paidJustificationField">
+                    <div class="form-group">
+                        <label for="paidJustification">Why is paid access needed? <span class="required">*</span></label>
+                        <textarea id="paidJustification" placeholder="Briefly explain why paid access is necessary for your role..."></textarea>
+                        <div class="error-message" id="paidJustificationError">Please provide justification for paid access</div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Back</button>
+                    <button type="button" class="btn-primary" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Scope & Access Details -->
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2 class="step-title">Scope & Access Details</h2>
+                    <p class="step-description">Define what you need access to</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="accessScope">Access Scope <span class="required">*</span></label>
+                    <select id="accessScope" required>
+                        <option value="">Select scope</option>
+                        <option value="organization">Organization-wide</option>
+                        <option value="specific">Specific files or projects</option>
+                    </select>
+                    <div class="error-message" id="accessScopeError">Please select an access scope</div>
+                </div>
+
+                <div class="conditional-field" id="specificScopeField">
+                    <div class="form-group">
+                        <label for="specificFiles">Specify Files or Projects <span class="required">*</span></label>
+                        <textarea id="specificFiles" placeholder="List the specific files, projects, or teams you need access to..."></textarea>
+                        <div class="error-message" id="specificFilesError">Please specify which files or projects you need access to</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="accessDuration">Access Duration <span class="required">*</span></label>
+                    <select id="accessDuration" required>
+                        <option value="">Select duration</option>
+                        <option value="permanent">Permanent (ongoing role)</option>
+                        <option value="temporary">Temporary (specific project)</option>
+                    </select>
+                    <div class="error-message" id="accessDurationError">Please select access duration</div>
+                </div>
+
+                <div class="conditional-field" id="temporaryEndField">
+                    <div class="form-group">
+                        <label for="temporaryEnd">Estimated End Date <span class="required">*</span></label>
+                        <input type="date" id="temporaryEnd">
+                        <div class="error-message" id="temporaryEndError">Please provide an estimated end date</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="businessJustification">Business Justification <span class="required">*</span></label>
+                    <textarea id="businessJustification" placeholder="Explain how Figma access supports your work and contributes to business objectives..."></textarea>
+                    <div class="error-message" id="businessJustificationError">Please provide business justification</div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Back</button>
+                    <button type="button" class="btn-primary" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Manager Approval -->
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h2 class="step-title">Manager Approval</h2>
+                    <p class="step-description">Manager approval is required for all access requests</p>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>Important:</strong>
+                    Your manager will receive an automated email to approve this request. The request will not be processed until manager approval is received.
+                </div>
+
+                <div class="form-group">
+                    <label for="managerName">Manager Name <span class="required">*</span></label>
+                    <input type="text" id="managerName" required placeholder="Jane Smith">
+                    <div class="error-message" id="managerNameError">Please enter your manager's name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="managerTitle">Manager Title <span class="required">*</span></label>
+                    <input type="text" id="managerTitle" required placeholder="Director of Product">
+                    <div class="error-message" id="managerTitleError">Please enter your manager's title</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="managerEmail">Manager Email <span class="required">*</span></label>
+                    <input type="email" id="managerEmail" required placeholder="jane.smith@stewart.com">
+                    <div class="error-message" id="managerEmailError">Please enter a valid email address</div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Back</button>
+                    <button type="button" class="btn-primary" onclick="nextStep()">Review Request</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Review -->
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h2 class="step-title">Review Your Request</h2>
+                    <p class="step-description">Please review your information before submitting</p>
+                </div>
+
+                <div class="summary-grid" id="summaryContent">
+                    <!-- Summary will be populated by JavaScript -->
+                </div>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <strong>Next Steps:</strong>
+                    After submission, your request will be sent to both Figma Administrators (Caroline Cone and Luana Ramcharran) and your manager for approval. You will receive a response within 2 business days.
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Back</button>
+                    <button type="button" class="btn-primary" onclick="submitRequest()">Submit Request</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Confirmation -->
+            <div class="step" id="step6">
+                <div style="text-align: center; padding: 2rem 0;">
+                    <div class="success-icon">✓</div>
+                    <h2 class="step-title">Request Complete!</h2>
+                    <p class="step-description" style="margin-top: 1rem; font-size: 1rem;">
+                        We tried to open your email client automatically.
+                    </p>
+                </div>
+
+                <div class="info-box" style="margin-top: 2rem; background: #FFF5E6; border-left-color: var(--primary);">
+                    <strong>Send your request email:</strong><br><br>
+                    <strong>To:</strong> Caroline.Cone@stewart.com, Luana.Ramcharran@stewart.com<br>
+                    <strong>CC:</strong> <span id="ccEmail" style="font-weight: 600;"></span><br>
+                    <strong>Subject:</strong> <span id="emailSubject" style="font-weight: 600;"></span><br><br>
+                    
+                    <button type="button" class="btn-primary" onclick="copyEmailBody()" style="width: 100%; margin-top: 0.5rem;">
+                        📋 Copy Email Body to Clipboard
+                    </button>
+                    <div id="copySuccess" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: var(--success); color: white; border-radius: 4px; text-align: center; font-weight: 600;">
+                        ✓ Copied! Now paste it into your email
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 1rem;">
+                    <strong>Steps:</strong><br>
+                    1. Click the "Copy Email Body" button above<br>
+                    2. Open your email (Outlook, Gmail, etc.)<br>
+                    3. Create a new email with the To/CC/Subject shown above<br>
+                    4. Paste the copied content into the email body<br>
+                    5. Click Send<br><br>
+                    You'll receive a response within 2 business days.
+                </div>
+
+                <div class="summary-grid" id="confirmationSummary" style="margin-top: 2rem;">
+                    <!-- Confirmation summary will be populated by JavaScript -->
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="resetForm()">Submit Another Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        const formData = {};
+
+        // Initialize radio options behavior
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                updateRadioStyles(radio.name);
+                handleConditionalFields();
+            });
+        });
+
+        function updateRadioStyles(groupName) {
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+                const option = radio.closest('.radio-option');
+                if (radio.checked) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+
+        // Handle conditional fields
+        document.getElementById('role').addEventListener('change', handleConditionalFields);
+        document.getElementById('userType').addEventListener('change', handleConditionalFields);
+        document.querySelectorAll('input[name="accessType"]').forEach(radio => {
+            radio.addEventListener('change', handleConditionalFields);
+        });
+        document.getElementById('accessScope').addEventListener('change', handleConditionalFields);
+        document.getElementById('accessDuration').addEventListener('change', handleConditionalFields);
+
+        function handleConditionalFields() {
+            // Role "Other" - show text input
+            const role = document.getElementById('role').value;
+            const roleOtherField = document.getElementById('roleOtherField');
+            if (role === 'other') {
+                roleOtherField.classList.add('show');
+            } else {
+                roleOtherField.classList.remove('show');
+            }
+
+            // External contractor - show contract end date
+            const userType = document.getElementById('userType').value;
+            const contractEndField = document.getElementById('contractEndField');
+            if (userType === 'external') {
+                contractEndField.classList.add('show');
+            } else {
+                contractEndField.classList.remove('show');
+            }
+
+            // Paid access - show justification
+            const accessType = document.querySelector('input[name="accessType"]:checked');
+            const paidJustificationField = document.getElementById('paidJustificationField');
+            if (accessType && ['collab', 'devmode', 'editor'].includes(accessType.value)) {
+                paidJustificationField.classList.add('show');
+            } else {
+                paidJustificationField.classList.remove('show');
+            }
+
+            // Specific scope - show file/project details
+            const accessScope = document.getElementById('accessScope').value;
+            const specificScopeField = document.getElementById('specificScopeField');
+            if (accessScope === 'specific') {
+                specificScopeField.classList.add('show');
+            } else {
+                specificScopeField.classList.remove('show');
+            }
+
+            // Temporary access - show end date
+            const accessDuration = document.getElementById('accessDuration').value;
+            const temporaryEndField = document.getElementById('temporaryEndField');
+            if (accessDuration === 'temporary') {
+                temporaryEndField.classList.add('show');
+            } else {
+                temporaryEndField.classList.remove('show');
+            }
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+            const errors = [];
+
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+
+            if (step === 1) {
+                // Validate name
+                const name = document.getElementById('name');
+                if (!name.value.trim()) {
+                    showError('name', 'nameError');
+                    isValid = false;
+                }
+
+                // Validate email
+                const email = document.getElementById('email');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim() || !emailRegex.test(email.value)) {
+                    showError('email', 'emailError');
+                    isValid = false;
+                }
+
+                // Validate role
+                const role = document.getElementById('role');
+                if (!role.value) {
+                    showError('role', 'roleError');
+                    isValid = false;
+                }
+
+                // Validate role "Other" field if selected
+                if (role.value === 'other') {
+                    const roleOther = document.getElementById('roleOther');
+                    if (!roleOther.value.trim()) {
+                        showError('roleOther', 'roleOtherError');
+                        isValid = false;
+                    }
+                }
+
+                // Validate user type
+                const userType = document.getElementById('userType');
+                if (!userType.value) {
+                    showError('userType', 'userTypeError');
+                    isValid = false;
+                }
+
+                // Validate contract end if external
+                if (userType.value === 'external') {
+                    const contractEnd = document.getElementById('contractEnd');
+                    if (!contractEnd.value) {
+                        showError('contractEnd', 'contractEndError');
+                        isValid = false;
+                    }
+                }
+            }
+
+            if (step === 2) {
+                // Validate access type
+                const accessType = document.querySelector('input[name="accessType"]:checked');
+                if (!accessType) {
+                    document.getElementById('accessTypeError').classList.add('show');
+                    isValid = false;
+                }
+
+                // Validate paid justification if needed
+                if (accessType && ['collab', 'devmode', 'editor'].includes(accessType.value)) {
+                    const paidJustification = document.getElementById('paidJustification');
+                    if (!paidJustification.value.trim()) {
+                        showError('paidJustification', 'paidJustificationError');
+                        isValid = false;
+                    }
+                }
+            }
+
+            if (step === 3) {
+                // Validate access scope
+                const accessScope = document.getElementById('accessScope');
+                if (!accessScope.value) {
+                    showError('accessScope', 'accessScopeError');
+                    isValid = false;
+                }
+
+                // Validate specific files if needed
+                if (accessScope.value === 'specific') {
+                    const specificFiles = document.getElementById('specificFiles');
+                    if (!specificFiles.value.trim()) {
+                        showError('specificFiles', 'specificFilesError');
+                        isValid = false;
+                    }
+                }
+
+                // Validate access duration
+                const accessDuration = document.getElementById('accessDuration');
+                if (!accessDuration.value) {
+                    showError('accessDuration', 'accessDurationError');
+                    isValid = false;
+                }
+
+                // Validate temporary end date if needed
+                if (accessDuration.value === 'temporary') {
+                    const temporaryEnd = document.getElementById('temporaryEnd');
+                    if (!temporaryEnd.value) {
+                        showError('temporaryEnd', 'temporaryEndError');
+                        isValid = false;
+                    }
+                }
+
+                // Validate business justification
+                const businessJustification = document.getElementById('businessJustification');
+                if (!businessJustification.value.trim()) {
+                    showError('businessJustification', 'businessJustificationError');
+                    isValid = false;
+                }
+            }
+
+            if (step === 4) {
+                // Validate manager name
+                const managerName = document.getElementById('managerName');
+                if (!managerName.value.trim()) {
+                    showError('managerName', 'managerNameError');
+                    isValid = false;
+                }
+
+                // Validate manager title
+                const managerTitle = document.getElementById('managerTitle');
+                if (!managerTitle.value.trim()) {
+                    showError('managerTitle', 'managerTitleError');
+                    isValid = false;
+                }
+
+                // Validate manager email
+                const managerEmail = document.getElementById('managerEmail');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!managerEmail.value.trim() || !emailRegex.test(managerEmail.value)) {
+                    showError('managerEmail', 'managerEmailError');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        function showError(fieldId, errorId) {
+            document.getElementById(fieldId).classList.add('error');
+            document.getElementById(errorId).classList.add('show');
+        }
+
+        function collectFormData() {
+            formData.name = document.getElementById('name').value;
+            formData.email = document.getElementById('email').value;
+            
+            const roleSelect = document.getElementById('role').value;
+            if (roleSelect === 'other') {
+                formData.role = document.getElementById('roleOther').value;
+            } else {
+                formData.role = roleSelect;
+            }
+            
+            formData.userType = document.getElementById('userType').value;
+            formData.contractEnd = document.getElementById('contractEnd').value;
+            
+            const accessTypeEl = document.querySelector('input[name="accessType"]:checked');
+            formData.accessType = accessTypeEl ? accessTypeEl.value : '';
+            formData.paidJustification = document.getElementById('paidJustification').value;
+            
+            formData.accessScope = document.getElementById('accessScope').value;
+            formData.specificFiles = document.getElementById('specificFiles').value;
+            formData.accessDuration = document.getElementById('accessDuration').value;
+            formData.temporaryEnd = document.getElementById('temporaryEnd').value;
+            formData.businessJustification = document.getElementById('businessJustification').value;
+            
+            formData.managerName = document.getElementById('managerName').value;
+            formData.managerTitle = document.getElementById('managerTitle').value;
+            formData.managerEmail = document.getElementById('managerEmail').value;
+        }
+
+        function displaySummary() {
+            collectFormData();
+            const accessTypeNames = {
+                'viewer': 'Viewer (Free)',
+                'collab': 'Collab (Paid)',
+                'devmode': 'Dev Mode (Paid)',
+                'editor': 'Editor (Paid)'
+            };
+
+            const userTypeNames = {
+                'internal': 'Internal Employee',
+                'external': 'External Contractor'
+            };
+
+            const scopeNames = {
+                'organization': 'Organization-wide',
+                'specific': 'Specific files/projects'
+            };
+
+            const durationNames = {
+                'permanent': 'Permanent',
+                'temporary': 'Temporary'
+            };
+
+            let html = `
+                <div class="summary-item">
+                    <div class="summary-label">Name</div>
+                    <div class="summary-value">${formData.name}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Email</div>
+                    <div class="summary-value">${formData.email}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Role / Team</div>
+                    <div class="summary-value">${formData.role}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">User Type</div>
+                    <div class="summary-value">${userTypeNames[formData.userType]}</div>
+                </div>
+            `;
+
+            if (formData.userType === 'external') {
+                html += `
+                    <div class="summary-item">
+                        <div class="summary-label">Contract End Date</div>
+                        <div class="summary-value">${new Date(formData.contractEnd).toLocaleDateString()}</div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="summary-item">
+                    <div class="summary-label">Access Type</div>
+                    <div class="summary-value">${accessTypeNames[formData.accessType]}</div>
+                </div>
+            `;
+
+            if (['collab', 'devmode', 'editor'].includes(formData.accessType)) {
+                html += `
+                    <div class="summary-item">
+                        <div class="summary-label">Paid Access Justification</div>
+                        <div class="summary-value">${formData.paidJustification}</div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="summary-item">
+                    <div class="summary-label">Access Scope</div>
+                    <div class="summary-value">${scopeNames[formData.accessScope]}</div>
+                </div>
+            `;
+
+            if (formData.accessScope === 'specific') {
+                html += `
+                    <div class="summary-item">
+                        <div class="summary-label">Specific Files/Projects</div>
+                        <div class="summary-value">${formData.specificFiles}</div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="summary-item">
+                    <div class="summary-label">Access Duration</div>
+                    <div class="summary-value">${durationNames[formData.accessDuration]}</div>
+                </div>
+            `;
+
+            if (formData.accessDuration === 'temporary') {
+                html += `
+                    <div class="summary-item">
+                        <div class="summary-label">Estimated End Date</div>
+                        <div class="summary-value">${new Date(formData.temporaryEnd).toLocaleDateString()}</div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="summary-item">
+                    <div class="summary-label">Business Justification</div>
+                    <div class="summary-value">${formData.businessJustification}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Manager</div>
+                    <div class="summary-value">${formData.managerName} (${formData.managerTitle})</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Manager Email</div>
+                    <div class="summary-value">${formData.managerEmail}</div>
+                </div>
+            `;
+
+            document.getElementById('summaryContent').innerHTML = html;
+            document.getElementById('confirmationSummary').innerHTML = html;
+        }
+
+        function nextStep() {
+            if (!validateStep(currentStep)) {
+                return;
+            }
+
+            if (currentStep === 4) {
+                displaySummary();
+            }
+
+            if (currentStep === 5) {
+                // Populate email details on confirmation page
+                document.getElementById('ccEmail').textContent = formData.managerEmail;
+                document.getElementById('emailSubject').textContent = `Figma Access Request - ${formData.name}`;
+            }
+
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep++;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            updateProgressBar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyEmailBody() {
+            const emailBody = generateEmailBody();
+            
+            navigator.clipboard.writeText(emailBody).then(() => {
+                // Show success message
+                const successMsg = document.getElementById('copySuccess');
+                successMsg.style.display = 'block';
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                // Fallback: create a text area and select it
+                const textArea = document.createElement('textarea');
+                textArea.value = emailBody;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    const successMsg = document.getElementById('copySuccess');
+                    successMsg.style.display = 'block';
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 3000);
+                } catch (err) {
+                    alert('Please manually copy the email content');
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function prevStep() {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            updateProgressBar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        function submitRequest() {
+            collectFormData();
+            
+            console.log('Form data collected:', formData);
+            
+            // Generate email body
+            const emailBody = generateEmailBody();
+            console.log('Email body length:', emailBody.length);
+            
+            // Generate email subject
+            const subject = `Figma Access Request - ${formData.name}`;
+            
+            // Email recipients
+            const to = 'Caroline.Cone@stewart.com,Luana.Ramcharran@stewart.com';
+            const cc = formData.managerEmail;
+            
+            // Create mailto link
+            const mailtoLink = `mailto:${to}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            console.log('Mailto link length:', mailtoLink.length);
+            console.log('Attempting to open mailto link...');
+            
+            // Try to open email client
+            try {
+                const opened = window.open(mailtoLink, '_blank');
+                if (!opened) {
+                    console.log('Popup blocked or mailto failed');
+                }
+            } catch (error) {
+                console.error('mailto error:', error);
+            }
+            
+            // Show confirmation page
+            setTimeout(() => {
+                nextStep();
+            }, 500);
+        }
+
+        function generateEmailBody() {
+            const accessTypeNames = {
+                'viewer': 'Viewer (Free)',
+                'collab': 'Collab (Paid)',
+                'devmode': 'Dev Mode (Paid)',
+                'editor': 'Editor (Paid)'
+            };
+
+            let body = `FIGMA ACCESS REQUEST
+
+Name: ${formData.name}
+Email: ${formData.email}
+Role: ${formData.role}
+User Type: ${formData.userType === 'internal' ? 'Internal' : 'External Contractor'}`;
+
+            if (formData.userType === 'external' && formData.contractEnd) {
+                body += `
+Contract Ends: ${new Date(formData.contractEnd).toLocaleDateString()}`;
+            }
+
+            body += `
+
+ACCESS REQUESTED: ${accessTypeNames[formData.accessType]}`;
+
+            if (['collab', 'devmode', 'editor'].includes(formData.accessType) && formData.paidJustification) {
+                body += `
+Why: ${formData.paidJustification}`;
+            }
+
+            body += `
+
+SCOPE: ${formData.accessScope === 'organization' ? 'Organization-wide' : 'Specific files'}`;
+
+            if (formData.accessScope === 'specific' && formData.specificFiles) {
+                body += `
+Files: ${formData.specificFiles}`;
+            }
+
+            body += `
+Duration: ${formData.accessDuration === 'permanent' ? 'Permanent' : 'Temporary'}`;
+
+            if (formData.accessDuration === 'temporary' && formData.temporaryEnd) {
+                body += ` (until ${new Date(formData.temporaryEnd).toLocaleDateString()})`;
+            }
+
+            body += `
+
+Business Need: ${formData.businessJustification}
+
+Manager: ${formData.managerName} (${formData.managerTitle}) - ${formData.managerEmail}`;
+
+            return body;
+        }
+
+        function resetForm() {
+            currentStep = 1;
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById('step1').classList.add('active');
+            document.querySelectorAll('input[type="text"], input[type="email"], input[type="date"], textarea').forEach(el => el.value = '');
+            document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+            document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+            document.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.conditional-field').forEach(el => el.classList.remove('show'));
+            updateProgressBar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        updateProgressBar();
+    </script>
+</body>
+</html>
